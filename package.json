@@ -2,6 +2,9 @@
   "name": "guraai",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
   "devDependencies": {
     "bun-types": "latest"
   },
@@ -9,6 +12,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "node_characterai": "^1.2.1"
   }
 }
