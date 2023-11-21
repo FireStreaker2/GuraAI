@@ -45,7 +45,10 @@ client.on("messageCreate", async (message) => {
 				.replace(/Hewwo\s*~/, "");
 		} else response.text = "Error";
 
-		await message.reply(response.text);
+		await message.reply({
+			content: response.text,
+			allowedMentions: { parse: [] },
+		});
 	}
 });
 

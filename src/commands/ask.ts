@@ -31,5 +31,8 @@ export const execute = async (interaction: CommandInteraction) => {
 			.replace(/Hewwo\s*~/, "");
 	} else response.text = "Error";
 
-	await interaction.editReply(response.text);
+	await interaction.editReply({
+		content: response.text,
+		allowedMentions: { parse: [] },
+	});
 };
