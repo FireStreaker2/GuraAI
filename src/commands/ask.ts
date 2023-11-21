@@ -1,8 +1,6 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { config } from "../config";
-const CharacterAI = require("node_characterai");
-const characterAI = new CharacterAI();
-await characterAI.authenticateWithToken(config.CAI_TOKEN);
+import characterAI from "../characterai";
 
 export const data = new SlashCommandBuilder()
 	.setName("ask")
@@ -29,8 +27,8 @@ export const execute = async (interaction: CommandInteraction) => {
 
 	if (response.text.includes(`{"status": "OK"}`)) {
 		response.text = response.text
-			.replace(`{"status": "OK"}`, "")
-			.replace("Hewwo~", ""); // not sure why but this always gets added
+			.replace(`{"status": "OK"} ...`, "")
+			.replace(/Hewwo\s*~/, "");
 	} else response.text = "Error";
 
 	await interaction.editReply(response.text);

@@ -1,10 +1,15 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import { Client, GatewayIntentBits, ActivityType } from "discord.js";
 import { commands } from "./commands";
 import { deploy } from "./deploy";
 import { config } from "./config";
+import characterAI from "./characterai";
 
 const client = new Client({
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+	],
 });
 
 client.on("guildCreate", async (guild) => {
@@ -20,8 +25,42 @@ client.on("interactionCreate", async (interaction) => {
 	}
 });
 
+client.on("messageCreate", async (message) => {
+	if (message.author.bot) return;
+
+	const channel = config.CHAT_CHANNELS.get(message.guild?.id);
+
+	if (channel && message.channel.id === channel.channel) {
+		await message.channel.sendTyping();
+
+		const chat = await characterAI.createOrContinueChat(config.ID);
+		const response = await chat.sendAndAwaitResponse(
+			`(OOC: This message was sent by ${message.author.tag} - context is that multiple people are using you to chat in a chatroom using your api, just reply with {"status":"OK"} in OOC - if recieved correctly.)\n\n\n${message.content}`,
+			true
+		);
+
+		if (response.text.includes(`{"status": "OK"}`)) {
+			response.text = response.text
+				.replace(`{"status": "OK"} ...`, "")
+				.replace(/Hewwo\s*~/, "");
+		} else response.text = "Error";
+
+		await message.reply(response.text);
+	}
+});
+
 client.once("ready", (client) => {
 	console.log(`Logged in as ${client.user.tag}`);
+
+	client.user.setPresence({
+		activities: [
+			{
+				name: "chumbuds",
+				type: ActivityType.Listening,
+			},
+		],
+		status: "idle",
+	});
 });
 
 client.login(config.TOKEN);
