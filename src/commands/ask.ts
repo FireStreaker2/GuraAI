@@ -25,11 +25,11 @@ export const execute = async (interaction: CommandInteraction) => {
 		true
 	);
 
-	if (response.text.includes(`{"status": "OK"}`)) {
-		response.text = response.text
-			.replace(`{"status": "OK"} ...`, "")
-			.replace(/Hewwo\s*~/, "");
-	} else response.text = "Error";
+	response.text = response.text.includes(`{"status": "OK"}`)
+		? response.text
+				.replace(/\{"status"\s*:\s*"OK"\}\s*\.\.\./, "")
+				.replace(/[Hh]([ae]llo|ewwo)\s*~/, "")
+		: "Error";
 
 	await interaction.editReply({
 		content: response.text,

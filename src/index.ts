@@ -1,4 +1,10 @@
-import { Client, GatewayIntentBits, ActivityType } from "discord.js";
+import {
+	Client,
+	GatewayIntentBits,
+	ActivityType,
+	AttachmentBuilder,
+	EmbedBuilder,
+} from "discord.js";
 import { commands } from "./commands";
 import { deploy } from "./deploy";
 import { config } from "./config";
@@ -14,6 +20,27 @@ const client = new Client({
 
 client.on("guildCreate", async (guild) => {
 	await deploy({ guildId: guild.id });
+
+	const file = new AttachmentBuilder("src/images/goomba.png");
+	const embed = new EmbedBuilder()
+		.setColor(0x00d9ff)
+		.setTitle("Hello!")
+		.setDescription("Domo, same desu~")
+		.setThumbnail("attachment://goomba.png")
+		.addFields(
+			{ name: "Have Fun", value: "I hope you have fun talking with me :3" },
+			{
+				name: "Get Started",
+				value: "To get started, you can look at my commands with ``/help``",
+			}
+		)
+		.setFooter({ text: "Made by firestreaker2" });
+
+	try {
+		guild.systemChannel?.send({ embeds: [embed], files: [file] });
+	} catch (error) {
+		console.error(`Error when sending welcome message: ${error}`);
+	}
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -39,15 +66,15 @@ client.on("messageCreate", async (message) => {
 			true
 		);
 
-		if (response.text.includes(`{"status": "OK"}`)) {
-			response.text = response.text
-				.replace(`{"status": "OK"} ...`, "")
-				.replace(/Hewwo\s*~/, "");
-		} else response.text = "Error";
+		response.text = response.text.includes(`{"status": "OK"}`)
+			? response.text
+					.replace(/\{"status"\s*:\s*"OK"\}\s*\.\.\./, "")
+					.replace(/[Hh]([ae]llo|ewwo)\s*~/, "")
+			: "Error";
 
 		await message.reply({
 			content: response.text,
-			allowedMentions: { parse: [] },
+			allowedMentions: { parse: ["users"], repliedUser: true },
 		});
 	}
 });

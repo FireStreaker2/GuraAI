@@ -1,4 +1,9 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+	AttachmentBuilder,
+	CommandInteraction,
+	EmbedBuilder,
+	SlashCommandBuilder,
+} from "discord.js";
 import { deploy } from "../deploy";
 
 export const data = new SlashCommandBuilder()
@@ -8,10 +13,28 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: CommandInteraction) => {
 	await interaction.deferReply();
 
+	const file = new AttachmentBuilder("src/images/goomba.png");
+	const embed = new EmbedBuilder()
+		.setThumbnail("attachment://goomba.png")
+		.setFooter({ text: "Made by firestreaker2" });
+
 	if (interaction.guild?.id) {
 		await deploy({ guildId: interaction.guild?.id });
-		await interaction.editReply("Commands have been refreshed!");
+
+		embed
+			.setColor(0x00ff00)
+			.setTitle("Refreshed!")
+			.setDescription("Commands have succesfully been refreshed!")
+			.addFields({
+				name: "Not Working?",
+				value: "If the command didn't work, please try again later.",
+			});
 	} else {
-		await interaction.editReply("Error");
+		embed
+			.setColor(0xff0000)
+			.setTitle("Error!")
+			.setDescription("An error occurred. Please try again later.");
 	}
+
+	await interaction.editReply({ embeds: [embed], files: [file] });
 };
