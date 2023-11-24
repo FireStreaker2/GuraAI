@@ -28,5 +28,6 @@ export const execute = async (interaction: CommandInteraction) => {
 			{ name: "/remove", value: "Remove the current conversation channel" }
 		)
 		.setFooter({ text: "Made by firestreaker2" });
+    
 	await interaction.editReply({ embeds: [embed], files: [file] });
 };

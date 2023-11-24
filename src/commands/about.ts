@@ -26,5 +26,6 @@ export const execute = async (interaction: CommandInteraction) => {
 				"For more info, you may refer to the [GitHub Page](https://github.com/FireStreaker2/GuraAI).",
 		})
 		.setFooter({ text: "Made by firestreaker2" });
+    
 	await interaction.editReply({ embeds: [embed], files: [file] });
 };

@@ -19,7 +19,7 @@ export const execute = async (interaction: CommandInteraction) => {
 		.setFooter({ text: "Made by firestreaker2" });
 
 	if (interaction.guild?.id) {
-		await deploy({ guildId: interaction.guild?.id });
+		await deploy(interaction.guild.id);
 
 		embed
 			.setColor(0x00ff00)

@@ -19,7 +19,7 @@ const client = new Client({
 });
 
 client.on("guildCreate", async (guild) => {
-	await deploy({ guildId: guild.id });
+	await deploy(guild.id);
 
 	const file = new AttachmentBuilder("src/images/goomba.png");
 	const embed = new EmbedBuilder()
